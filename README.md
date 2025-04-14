@@ -7,7 +7,6 @@
     <meta name="keywords" content="تنظيف منازل, تنظيف مكاتب, شركة نظافة, حجز تنظيف, تنظيف شامل, توينينج للنظافة">
     <meta name="robots" content="index, follow">
     <style>
-        html { scroll-behavior: smooth; }
         body {
             font-family: Arial, sans-serif;
             text-align: center;
@@ -58,8 +57,12 @@
             margin-top: 15px;
         }
         @media (max-width: 480px) {
-            .container { padding: 15px; }
-            select, input, textarea, button { font-size: 14px; }
+            .container {
+                padding: 15px;
+            }
+            select, input, textarea, button {
+                font-size: 14px;
+            }
         }
     </style>
 </head>
@@ -97,130 +100,111 @@
                 <option value="700">تنظيف مرتبة سنجل ١٤٠ سم - 700 جنيه</option>
                 <option value="150">تنظيف شباك غرفة الوميتال - 150 جنيه</option>
                 <option value="300">تنظيف باب بلكونة الوميتال - 300 جنيه</option>
-                <option value="750">التنظيف اليومى المنتظم (10ص - 6م) بدون أدوات - 750 جنيه</option>            </select>
+                <option value="750">التنظيف اليومى المنتظم (10ص - 6م) بدون أدوات - 750 جنيه</option>
+            </select>
             <input type="number" class="area" placeholder="العدد أو المساحة" oninput="calculatePrice()">
             <button onclick="removeService(this)">❌ حذف</button>
         </div>
     </div>
     <button onclick="addService()">➕ إضافة خدمة أخرى</button>
     <p>💰 السعر الإجمالي: <span id="totalPrice">0</span> جنيه</p>
-
     <input type="text" id="name" placeholder="الاسم" required>
     <input type="tel" id="phone" placeholder="رقم الهاتف" required>
     <input type="text" id="address" placeholder="العنوان بالتفصيل" required>
-    <label for="date">📅 تاريخ الحجز</label>
-    <input type="date" id="date" required>
+    <input type="date" id="date" required >
     <select id="gender" required>
         <option value="ذكر">ذكر</option>
         <option value="أنثى">أنثى</option>
     </select>
     <textarea id="notes" placeholder="ملاحظات إضافية"></textarea>
     <div class="note">
-        💵 يجب دفع نصف قيمة الطلب مقدمًا (أي <span id="halfPrice">0</span> جنيه) <br>
+        💵 يجب دفع نصف إجمالى قيمة الطلب مقدمًا (أي <span id="halfPrice">0</span> جنيه) <br>
         يرجى التحويل على رقم محفظة <strong>01116199928</strong> ورفع صورة إثبات الدفع.
     </div>
     <input type="file" id="paymentProof" accept="image/*" required>
     <button onclick="getLocation()">📍 مشاركة الموقع</button>
     <input type="text" id="location" placeholder="موقعك" readonly>
-    <button onclick="validateAndSubmit()">📲 تأكيد الحجز</button>
+    <button onclick="sendWhatsApp()">📲 تأكيد الحجز عبر واتساب</button>
     <p id="successMessage" class="success-message" style="display:none;">تم تأكيد الحجز و شكرا لإختيارك شركة توينينج لخدمات النظافة 🌟</p>
 </div>
-
 <script>
-function calculatePrice() {
-    let total = 0;
-    const services = document.querySelectorAll('.service');
-    const areas = document.querySelectorAll('.area');
-    for (let i = 0; i < services.length; i++) {
-        const price = parseFloat(services[i].value);
-        const amount = parseFloat(areas[i].value) || 0;
-        total += price * amount;
-    }
-    document.getElementById('totalPrice').innerText = total;
-    document.getElementById('halfPrice').innerText = Math.ceil(total / 2);
-}
-
-function addService() {
-    const container = document.getElementById('servicesContainer');
-    const newService = container.firstElementChild.cloneNode(true);
-    newService.querySelector('.area').value = '';
-    container.appendChild(newService);
-}
-
-function removeService(btn) {
-    const container = document.getElementById('servicesContainer');
-    if (container.children.length > 1) btn.parentElement.remove();
-}
-
-function getLocation() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-            const lat = position.coords.latitude;
-            const lon = position.coords.longitude;
-            document.getElementById('location').value = `https://www.google.com/maps?q=${lat},${lon}`;
-        }, function(error) {
-            alert("فشل في الحصول على الموقع. الرجاء التأكد من تفعيل GPS أو المحاولة لاحقًا.");
+    function calculatePrice() {
+        let totalPrice = 0;
+        document.querySelectorAll('.serviceItem').forEach(item => {
+            let servicePrice = parseFloat(item.querySelector(".service").value);
+            let quantity = parseFloat(item.querySelector(".area").value) || 1;
+            totalPrice += servicePrice * quantity;
         });
-    } else {
-        alert("المتصفح لا يدعم مشاركة الموقع.");
+        document.getElementById("totalPrice").innerText = totalPrice;
+        document.getElementById("halfPrice").innerText = Math.ceil(totalPrice / 2);
     }
-}
-
-function validateAndSubmit() {
-    const proofInput = document.getElementById('paymentProof');
-    if (!proofInput.files.length) {
-        alert("يجب رفع صورة إثبات الدفع لتأكيد الحجز.");
-        return;
+    function addService() {
+        let serviceOptions = document.querySelector(".service").innerHTML;
+        let container = document.getElementById("servicesContainer");
+        let newService = document.createElement("div");
+        newService.classList.add("serviceItem");
+        newService.innerHTML = `
+            <label>اختر الخدمة</label>
+            <select class="service" onchange="calculatePrice()">` + serviceOptions + `</select>
+            <input type="number" class="area" placeholder="العدد أو المساحة" oninput="calculatePrice()">
+            <button onclick="removeService(this)">❌ حذف</button>
+        `;
+        container.appendChild(newService);
     }
-    const proofURL = URL.createObjectURL(proofInput.files[0]);
-    sendWhatsApp(proofURL);
-    sendEmail(proofURL);
-    document.getElementById('successMessage').style.display = 'block';
-}
-
-function sendWhatsApp(proofURL) {
-    const name = document.getElementById('name').value;
-    const phone = document.getElementById('phone').value;
-    const address = document.getElementById('address').value;
-    const date = document.getElementById('date').value;
-    const gender = document.getElementById('gender').value;
-    const notes = document.getElementById('notes').value;
-    const location = document.getElementById('location').value;
-    let services = document.querySelectorAll('.service');
-    let areas = document.querySelectorAll('.area');
-    let serviceText = '';
-    for (let i = 0; i < services.length; i++) {
-        const label = services[i].selectedOptions[0].text;
-        const qty = areas[i].value;
-        serviceText += `\n- ${label} × ${qty}`;
+    function removeService(button) {
+        button.parentElement.remove();
+        calculatePrice();
     }
-    const total = document.getElementById('totalPrice').innerText;
-    const half = document.getElementById('halfPrice').innerText;
-    const message = `🔹 اسم العميل: ${name}\n📞 رقم الهاتف: ${phone}\n📍 العنوان: ${address}\n📅 التاريخ: ${date}\n👤 النوع: ${gender}\n\n🧹 الخدمات:${serviceText}\n💰 الإجمالي: ${total} جنيه\n💵 نصف القيمة: ${half} جنيه\n📍 موقعك: ${location}\n📝 ملاحظات: ${notes}\n🖼️ رابط صورة الدفع: ${proofURL}`;
-    const url = `https://wa.me/201021584901?text=${encodeURIComponent(message)}`;
-    window.open(url, '_blank');
-}
-
-function sendEmail(proofURL) {
-    const name = document.getElementById('name').value;
-    const phone = document.getElementById('phone').value;
-    const address = document.getElementById('address').value;
-    const date = document.getElementById('date').value;
-    const gender = document.getElementById('gender').value;
-    const notes = document.getElementById('notes').value;
-    const location = document.getElementById('location').value;
-    const total = document.getElementById('totalPrice').innerText;
-    let services = document.querySelectorAll('.service');
-    let areas = document.querySelectorAll('.area');
-    let serviceText = '';
-    for (let i = 0; i < services.length; i++) {
-        const label = services[i].selectedOptions[0].text;
-        const qty = areas[i].value;
-        serviceText += `\n- ${label} × ${qty}`;
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                let latitude = position.coords.latitude;
+                let longitude = position.coords.longitude;
+                let locationUrl = `https://www.google.com/maps?q=${latitude},${longitude}`;
+                document.getElementById("location").value = locationUrl;
+            }, function(error) {
+                alert("لا يمكن تحديد موقعك، يرجى السماح بالوصول إلى الموقع.");
+            });
+        } else {
+            alert("المتصفح لا يدعم تحديد الموقع الجغرافي.");
+        }
     }
-    const body = `اسم العميل: ${name}\nرقم الهاتف: ${phone}\nالعنوان: ${address}\nتاريخ الحجز: ${date}\nالنوع: ${gender}\nالخدمات:${serviceText}\nالإجمالي: ${total} جنيه\nملاحظات: ${notes}\nموقع العميل: ${location}\nرابط إثبات الدفع: ${proofURL}`;
-    window.location.href = `mailto:info@twiningcleaning.com?subject=طلب حجز تنظيف من ${name}&body=${encodeURIComponent(body)}`;
-}
+    async function sendWhatsApp() {
+        let phoneNumber = "201021584901";
+        let name = document.getElementById("name").value.trim();
+        let phone = document.getElementById("phone").value.trim();
+        let address = document.getElementById("address").value.trim();
+        let date = document.getElementById("date").value.trim();
+        let gender = document.getElementById("gender").value;
+        let notes = document.getElementById("notes").value.trim() || "لا يوجد";
+        let location = document.getElementById("location").value.trim() || "لم يتم مشاركة الموقع";
+        let totalPrice = document.getElementById("totalPrice").innerText;
+        let paymentProof = document.getElementById("paymentProof").files[0];
+        if (!paymentProof) {
+            alert("يرجى رفع صورة إثبات الدفع.");
+            return;
+        }
+        const formData = new FormData();
+        formData.append("image", paymentProof);
+        const response = await fetch("https://api.imgbb.com/1/upload?key=bde613bd4475de5e00274a795091ba04", {
+            method: "POST",
+            body: formData
+        });
+        const result = await response.json();
+        const proofUrl = result.data.url;
+        let services = [];
+        document.querySelectorAll(".serviceItem").forEach(item => {
+            let serviceText = item.querySelector(".service").selectedOptions[0].text;
+            let quantity = item.querySelector(".area").value || 1;
+            services.push(`${serviceText} - ${quantity}`);
+        });
+        let message = `👤 الاسم: ${name}\n👫 النوع: ${gender}\n📞 الهاتف: ${phone}\n📍 الموقع: ${location}\n📍 العنوان: ${address}\n🗓 التاريخ: ${date}\n📝 ملاحظات: ${notes}\n💰 السعر الإجمالي: ${totalPrice} جنيه\n🚰 الخدمات:\n${services.join("\n")}\n📸 إثبات الدفع: ${proofUrl}`;
+        let waUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+        window.open(waUrl, "_blank");
+        let mailtoLink = `mailto:Twiningtrade@gmail.com?subject=طلب حجز خدمة تنظيف من ${name}&body=${encodeURIComponent(message)}`;
+        window.open(mailtoLink, "_blank");
+        document.getElementById("successMessage").style.display = "block";
+    }
 </script>
 </body>
 </html>
