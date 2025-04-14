@@ -13,13 +13,35 @@
     <meta property="og:locale" content="ar_AR">
     <meta name="theme-color" content="#e0f7fa">
 
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-EFZE3Z5RCP"></script>
     <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-XXXXXXXXXX');
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-EFZE3Z5RCP');
+    </script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+          if (navigator.userAgent.includes("FBAN") || navigator.userAgent.includes("FBAV")) {
+              alert("يرجى فتح النموذج في متصفح خارجي لتفعيل مشاركة الموقع بشكل سليم.");
+          }
+      });
+          async function sendToGoogleSheet(data) {
+          await fetch("https://script.google.com/macros/s/AKfycbx5xBX2sHmJ9KDNA0QPZIJWWHyudx-XK4kxdeym6TAsqSFGvi8-KADic2ZlQd-GCWZo/exec", {
+              method: "POST",
+              body: JSON.stringify(data),
+              headers: {
+                  "Content-Type": "application/json"
+              }
+          });
+      }
+
+      async function submitBooking(formData) {
+          await sendToGoogleSheet(formData);
+          document.getElementById("successMessage").style.display = "block";
+      }
     </script>
 
     <style>
@@ -47,6 +69,11 @@
             border: 1px solid #ccc;
             border-radius: 5px;
             box-sizing: border-box;
+        }
+        input[type="date"]::before {
+            content: "تاريخ الحجز";
+            color: #999;
+            margin-right: 5px;
         }
         .logo {
             width: 100px;
@@ -131,7 +158,7 @@
     <input type="text" id="name" placeholder="الاسم" required>
     <input type="tel" id="phone" placeholder="رقم الهاتف" required>
     <input type="text" id="address" placeholder="العنوان بالتفصيل" required>
-        <label for="date">حدد تاريخ الحجز : 👇 </label>
+        <label for="date">حدد تاريخ الحجز👇:</label>
     <input type="date" id="date" placeholder="حدد تاريخ الحجز" required>
     <select id="gender" required>
         <option value="ذكر">ذكر</option>
@@ -139,7 +166,7 @@
     </select>
     <textarea id="notes" placeholder="ملاحظات إضافية"></textarea>
     <div class="note">
-        💵 يجب دفع نصف إجمالى قيمة الطلب مقدمًا (أي <span id="halfPrice">0</span> جنيه) <br>
+        💵 يجب دفع نصف قيمة الطلب مقدمًا (أي <span id="halfPrice">0</span> جنيه) <br>
         يرجى التحويل على رقم محفظة <strong>01116199928</strong> ورفع صورة إثبات الدفع.
     </div>
     <input type="file" id="paymentProof" accept="image/*" required>
