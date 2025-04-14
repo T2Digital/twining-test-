@@ -29,7 +29,7 @@
           }
       });
           async function sendToGoogleSheet(data) {
-          await fetch("https://script.google.com/macros/s/AKfycbx5xBX2sHmJ9KDNA0QPZIJWWHyudx-XK4kxdeym6TAsqSFGvi8-KADic2ZlQd-GCWZo/exec", {
+          await fetch("https://script.google.com/macros/s/AKfycbwzLf0vSglAs13PcrmwwqqNNP1GKKrTQvnnq1zj68fKhV69f6UEMpP5wC9zvFIBG0Q2/exec", {
               method: "POST",
               body: JSON.stringify(data),
               headers: {
