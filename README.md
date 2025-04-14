@@ -131,15 +131,15 @@
     <input type="text" id="name" placeholder="الاسم" required>
     <input type="tel" id="phone" placeholder="رقم الهاتف" required>
     <input type="text" id="address" placeholder="العنوان بالتفصيل" required>
-        <label for="date">حدد تاريخ الحجز:</label>
-    <input type="date" id="date" placeholder="تاريخ الحجز" required>
+        <label for="date">حدد تاريخ الحجز👇:</label>
+    <input type="date" id="date" placeholder="حدد تاريخ الحجز" required>
     <select id="gender" required>
         <option value="ذكر">ذكر</option>
         <option value="أنثى">أنثى</option>
     </select>
     <textarea id="notes" placeholder="ملاحظات إضافية"></textarea>
     <div class="note">
-        💵 يجب دفع نصف قيمة الطلب مقدمًا (أي <span id="halfPrice">0</span> جنيه) <br>
+        💵 يجب دفع نصف إجمالى قيمة الطلب مقدمًا (أي <span id="halfPrice">0</span> جنيه) <br>
         يرجى التحويل على رقم محفظة <strong>01116199928</strong> ورفع صورة إثبات الدفع.
     </div>
     <input type="file" id="paymentProof" accept="image/*" required>
