@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="ar">
 <head>
     <meta charset="UTF-8">
@@ -71,6 +72,7 @@
         <div class="serviceItem">
             <label>اختر الخدمة</label>
             <select class="service" onchange="calculatePrice()">
+
                 <option value="35">خدمة تنظيف عميق - 35 جنيه للمتر</option>
                 <option value="50">تنظيف ما بعد البناء والتشطيب - 50 جنيه للمتر</option>
                 <option value="75">تنظيف شلتة الالياف الصناعية - 75 جنيه</option>
@@ -97,8 +99,7 @@
                 <option value="700">تنظيف مرتبة سنجل ١٤٠ سم - 700 جنيه</option>
                 <option value="150">تنظيف شباك غرفة الوميتال - 150 جنيه</option>
                 <option value="300">تنظيف باب بلكونة الوميتال - 300 جنيه</option>
-                <option value="750">التنظيف اليومى المنتظم (10ص - 6م) بدون أدوات - 750 جنيه</option>
-            </select>
+                <option value="750">التنظيف اليومى المنتظم (10ص - 6م) بدون أدوات - 750 جنيه</option>            </select>
             <input type="number" class="area" placeholder="العدد أو المساحة" oninput="calculatePrice()">
             <button onclick="removeService(this)">❌ حذف</button>
         </div>
@@ -124,7 +125,6 @@
     <button onclick="getLocation()">📍 مشاركة الموقع</button>
     <input type="text" id="location" placeholder="موقعك" readonly>
     <button onclick="validateAndSubmit()">📲 تأكيد الحجز</button>
-    <button onclick="openInBrowser()">🌐 فتح في المتصفح</button>
     <p id="successMessage" class="success-message" style="display:none;">تم تأكيد الحجز و شكرا لإختيارك شركة توينينج لخدمات النظافة 🌟</p>
 </div>
 
@@ -159,35 +159,28 @@ function getLocation() {
         navigator.geolocation.getCurrentPosition(function(position) {
             const lat = position.coords.latitude;
             const lon = position.coords.longitude;
-            document.getElementById('location').value = `https://maps.google.com/?q=${lat},${lon}`;
-        }, function() {
-            alert("فشل في الحصول على الموقع. الرجاء المحاولة لاحقًا.");
+            document.getElementById('location').value = `https://www.google.com/maps?q=${lat},${lon}`;
+        }, function(error) {
+            alert("فشل في الحصول على الموقع. الرجاء التأكد من تفعيل GPS أو المحاولة لاحقًا.");
         });
     } else {
         alert("المتصفح لا يدعم مشاركة الموقع.");
     }
 }
 
-function openInBrowser() {
-    if (window.top !== window.self) {
-        window.open(window.location.href, '_blank');
-    } else {
-        alert("أنت بالفعل خارج تطبيق فيسبوك");
-    }
-}
-
 function validateAndSubmit() {
-    const proof = document.getElementById('paymentProof').files.length;
-    if (!proof) {
+    const proofInput = document.getElementById('paymentProof');
+    if (!proofInput.files.length) {
         alert("يجب رفع صورة إثبات الدفع لتأكيد الحجز.");
         return;
     }
-    sendWhatsApp();
-    sendEmail();
+    const proofURL = URL.createObjectURL(proofInput.files[0]);
+    sendWhatsApp(proofURL);
+    sendEmail(proofURL);
     document.getElementById('successMessage').style.display = 'block';
 }
 
-function sendWhatsApp() {
+function sendWhatsApp(proofURL) {
     const name = document.getElementById('name').value;
     const phone = document.getElementById('phone').value;
     const address = document.getElementById('address').value;
@@ -195,7 +188,6 @@ function sendWhatsApp() {
     const gender = document.getElementById('gender').value;
     const notes = document.getElementById('notes').value;
     const location = document.getElementById('location').value;
-
     let services = document.querySelectorAll('.service');
     let areas = document.querySelectorAll('.area');
     let serviceText = '';
@@ -204,16 +196,14 @@ function sendWhatsApp() {
         const qty = areas[i].value;
         serviceText += `\n- ${label} × ${qty}`;
     }
-
     const total = document.getElementById('totalPrice').innerText;
     const half = document.getElementById('halfPrice').innerText;
-
-    const message = `🔹 اسم العميل: ${name}\n📞 رقم الهاتف: ${phone}\n📍 العنوان: ${address}\n📅 التاريخ: ${date}\n👤 النوع: ${gender}\n\n🧹 الخدمات:${serviceText}\n💰 الإجمالي: ${total} جنيه\n💵 نصف القيمة: ${half} جنيه\n📍 موقعك: ${location}\n📝 ملاحظات: ${notes}`;
+    const message = `🔹 اسم العميل: ${name}\n📞 رقم الهاتف: ${phone}\n📍 العنوان: ${address}\n📅 التاريخ: ${date}\n👤 النوع: ${gender}\n\n🧹 الخدمات:${serviceText}\n💰 الإجمالي: ${total} جنيه\n💵 نصف القيمة: ${half} جنيه\n📍 موقعك: ${location}\n📝 ملاحظات: ${notes}\n🖼️ رابط صورة الدفع: ${proofURL}`;
     const url = `https://wa.me/201116199928?text=${encodeURIComponent(message)}`;
     window.open(url, '_blank');
 }
 
-function sendEmail() {
+function sendEmail(proofURL) {
     const name = document.getElementById('name').value;
     const phone = document.getElementById('phone').value;
     const address = document.getElementById('address').value;
@@ -222,7 +212,6 @@ function sendEmail() {
     const notes = document.getElementById('notes').value;
     const location = document.getElementById('location').value;
     const total = document.getElementById('totalPrice').innerText;
-
     let services = document.querySelectorAll('.service');
     let areas = document.querySelectorAll('.area');
     let serviceText = '';
@@ -231,8 +220,7 @@ function sendEmail() {
         const qty = areas[i].value;
         serviceText += `\n- ${label} × ${qty}`;
     }
-
-    const body = `اسم العميل: ${name}\nرقم الهاتف: ${phone}\nالعنوان: ${address}\nتاريخ الحجز: ${date}\nالنوع: ${gender}\nالخدمات:${serviceText}\nالإجمالي: ${total} جنيه\nملاحظات: ${notes}\nموقع العميل: ${location}`;
+    const body = `اسم العميل: ${name}\nرقم الهاتف: ${phone}\nالعنوان: ${address}\nتاريخ الحجز: ${date}\nالنوع: ${gender}\nالخدمات:${serviceText}\nالإجمالي: ${total} جنيه\nملاحظات: ${notes}\nموقع العميل: ${location}\nرابط إثبات الدفع: ${proofURL}`;
     window.location.href = `mailto:info@twiningcleaning.com?subject=طلب حجز تنظيف من ${name}&body=${encodeURIComponent(body)}`;
 }
 </script>
