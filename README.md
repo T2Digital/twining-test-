@@ -1,19 +1,11 @@
-<!DOCTYPE html>
 <html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>احجز خدمة تنظيف احترافية في دقائق | توينينج للنظافة</title>
     <meta name="description" content="احصل على خدمات تنظيف شاملة ومميزة للمنازل والمكاتب من توينينج. أسعار تنافسية، حجز سهل، جودة عالية، وخدمة عملاء ممتازة. احجز الآن عبر واتساب.">
     <meta name="keywords" content="تنظيف منازل, تنظيف مكاتب, شركة نظافة, حجز تنظيف, تنظيف شامل, توينينج للنظافة">
     <meta name="robots" content="index, follow">
-    <meta property="og:title" content="احجز خدمة تنظيف احترافية في دقائق | توينينج للنظافة">
-    <meta property="og:description" content="خدمات تنظيف للمنازل والمكاتب بجودة عالية وسهولة في الحجز.">
-    <meta property="og:image" content="https://i.postimg.cc/bvjDNQ0j/Whats-App-Image-2025-04-07-at-21-17-23-e65cadc5-removebg-preview.png">
-    <meta property="og:url" content="https://yourdomain.com/booking">
-    <meta property="og:type" content="website">
-    <meta name="format-detection" content="telephone=no">
-    <title>احجز خدمة تنظيف احترافية في دقائق | توينينج للنظافة</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -114,7 +106,7 @@
     <input type="text" id="name" placeholder="الاسم" required>
     <input type="tel" id="phone" placeholder="رقم الهاتف" required>
     <input type="text" id="address" placeholder="العنوان بالتفصيل" required>
-    <input type="date" id="date" required>
+    <input type="date" id="date" required placeholder="تاريخ الحجز">
     <select id="gender" required>
         <option value="ذكر">ذكر</option>
         <option value="أنثى">أنثى</option>
@@ -176,35 +168,48 @@
         let name = document.getElementById("name").value.trim();
         let phone = document.getElementById("phone").value.trim();
         let address = document.getElementById("address").value.trim();
-        let date = document.getElementById("date").value.trim();
+        let date = document.getElementById("date").value;
         let gender = document.getElementById("gender").value;
-        let notes = document.getElementById("notes").value.trim() || "لا يوجد";
-        let location = document.getElementById("location").value.trim() || "لم يتم مشاركة الموقع";
+        let notes = document.getElementById("notes").value.trim();
+        let location = document.getElementById("location").value;
         let totalPrice = document.getElementById("totalPrice").innerText;
-        let paymentProof = document.getElementById("paymentProof").files[0];
-        if (!paymentProof) {
-            alert("يرجى رفع صورة إثبات الدفع.");
-            return;
-        }
-        const formData = new FormData();
-        formData.append("image", paymentProof);
-        const response = await fetch("https://api.imgbb.com/1/upload?key=bde613bd4475de5e00274a795091ba04", {
-            method: "POST",
-            body: formData
-        });
-        const result = await response.json();
-        const proofUrl = result.data.url;
+        let halfPrice = document.getElementById("halfPrice").innerText;
+
         let services = [];
-        document.querySelectorAll(".serviceItem").forEach(item => {
-            let serviceText = item.querySelector(".service").selectedOptions[0].text;
-            let quantity = item.querySelector(".area").value || 1;
-            services.push(`${serviceText} - ${quantity}`);
+        document.querySelectorAll('.serviceItem').forEach(item => {
+            let service = item.querySelector(".service").selectedOptions[0].text;
+            let quantity = item.querySelector(".area").value;
+            services.push(`${service} - ${quantity}`);
         });
-        let message = `👤 الاسم: ${name}\n👫 النوع: ${gender}\n📞 الهاتف: ${phone}\n📍 الموقع: ${location}\n📍 العنوان: ${address}\n🗓 التاريخ: ${date}\n📝 ملاحظات: ${notes}\n💰 السعر الإجمالي: ${totalPrice} جنيه\n🚰 الخدمات:\n${services.join("\n")}\n📸 إثبات الدفع: ${proofUrl}`;
-        let waUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-        window.open(waUrl, "_blank");
-        let mailtoLink = `mailto:Twiningtrade@gmail.com?subject=طلب حجز خدمة تنظيف من ${name}&body=${encodeURIComponent(message)}`;
-        window.open(mailtoLink, "_blank");
+
+        let message = `
+        📅 تاريخ الحجز: ${date} 
+        💸 السعر الإجمالي: ${totalPrice} جنيه
+        💰 نصف القيمة المدفوعة: ${halfPrice} جنيه
+        🏠 العنوان: ${address}
+        📱 الهاتف: ${phone}
+        🌍 الموقع: ${location}
+        🧑‍🤝‍🧑 الجنس: ${gender}
+        💬 ملاحظات: ${notes}
+        🛠️ الخدمات المختارة: 
+        ${services.join("\n")}
+        `;
+        
+        let url = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${encodeURIComponent(message)}`;
+        window.open(url, "_blank");
+        await sendEmail(message);
+    }
+    async function sendEmail(message) {
+        let emailData = {
+            to: 'your-email@example.com',
+            subject: 'طلب حجز خدمة تنظيف',
+            body: message
+        };
+        await fetch('https://your-email-api-endpoint.com/send', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(emailData)
+        });
     }
 </script>
 </body>
