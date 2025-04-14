@@ -71,7 +71,6 @@
         <div class="serviceItem">
             <label>اختر الخدمة</label>
             <select class="service" onchange="calculatePrice()">
-
                 <option value="35">خدمة تنظيف عميق - 35 جنيه للمتر</option>
                 <option value="50">تنظيف ما بعد البناء والتشطيب - 50 جنيه للمتر</option>
                 <option value="75">تنظيف شلتة الالياف الصناعية - 75 جنيه</option>
@@ -198,7 +197,7 @@ function sendWhatsApp(proofURL) {
     const total = document.getElementById('totalPrice').innerText;
     const half = document.getElementById('halfPrice').innerText;
     const message = `🔹 اسم العميل: ${name}\n📞 رقم الهاتف: ${phone}\n📍 العنوان: ${address}\n📅 التاريخ: ${date}\n👤 النوع: ${gender}\n\n🧹 الخدمات:${serviceText}\n💰 الإجمالي: ${total} جنيه\n💵 نصف القيمة: ${half} جنيه\n📍 موقعك: ${location}\n📝 ملاحظات: ${notes}\n🖼️ رابط صورة الدفع: ${proofURL}`;
-    const url = `https://wa.me/201116199928?text=${encodeURIComponent(message)}`;
+    const url = `https://wa.me/201021584901?text=${encodeURIComponent(message)}`;
     window.open(url, '_blank');
 }
 
