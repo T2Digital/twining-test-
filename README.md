@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="ar">
 <head>
     <meta charset="UTF-8">
@@ -50,6 +51,11 @@
             border: 1px dashed #e0c200;
             margin-top: 10px;
             border-radius: 5px;
+        }
+        .success-message {
+            color: green;
+            font-weight: bold;
+            margin-top: 15px;
         }
         @media (max-width: 480px) {
             .container {
@@ -106,7 +112,7 @@
     <input type="text" id="name" placeholder="الاسم" required>
     <input type="tel" id="phone" placeholder="رقم الهاتف" required>
     <input type="text" id="address" placeholder="العنوان بالتفصيل" required>
-    <input type="date" id="date" required placeholder="تاريخ الحجز">
+    <input type="date" id="date" placeholder="تاريخ الحجز" required>
     <select id="gender" required>
         <option value="ذكر">ذكر</option>
         <option value="أنثى">أنثى</option>
@@ -120,6 +126,7 @@
     <button onclick="getLocation()">📍 مشاركة الموقع</button>
     <input type="text" id="location" placeholder="موقعك" readonly>
     <button onclick="sendWhatsApp()">📲 تأكيد الحجز عبر واتساب</button>
+    <p id="successMessage" class="success-message" style="display:none;">تم تأكيد الحجز و شكرا لإختيارك شركة توينينج لخدمات النظافة 🌟</p>
 </div>
 <script>
     function calculatePrice() {
@@ -168,48 +175,36 @@
         let name = document.getElementById("name").value.trim();
         let phone = document.getElementById("phone").value.trim();
         let address = document.getElementById("address").value.trim();
-        let date = document.getElementById("date").value;
+        let date = document.getElementById("date").value.trim();
         let gender = document.getElementById("gender").value;
-        let notes = document.getElementById("notes").value.trim();
-        let location = document.getElementById("location").value;
+        let notes = document.getElementById("notes").value.trim() || "لا يوجد";
+        let location = document.getElementById("location").value.trim() || "لم يتم مشاركة الموقع";
         let totalPrice = document.getElementById("totalPrice").innerText;
-        let halfPrice = document.getElementById("halfPrice").innerText;
-
+        let paymentProof = document.getElementById("paymentProof").files[0];
+        if (!paymentProof) {
+            alert("يرجى رفع صورة إثبات الدفع.");
+            return;
+        }
+        const formData = new FormData();
+        formData.append("image", paymentProof);
+        const response = await fetch("https://api.imgbb.com/1/upload?key=bde613bd4475de5e00274a795091ba04", {
+            method: "POST",
+            body: formData
+        });
+        const result = await response.json();
+        const proofUrl = result.data.url;
         let services = [];
-        document.querySelectorAll('.serviceItem').forEach(item => {
-            let service = item.querySelector(".service").selectedOptions[0].text;
-            let quantity = item.querySelector(".area").value;
-            services.push(`${service} - ${quantity}`);
+        document.querySelectorAll(".serviceItem").forEach(item => {
+            let serviceText = item.querySelector(".service").selectedOptions[0].text;
+            let quantity = item.querySelector(".area").value || 1;
+            services.push(`${serviceText} - ${quantity}`);
         });
-
-        let message = `
-        📅 تاريخ الحجز: ${date} 
-        💸 السعر الإجمالي: ${totalPrice} جنيه
-        💰 نصف القيمة المدفوعة: ${halfPrice} جنيه
-        🏠 العنوان: ${address}
-        📱 الهاتف: ${phone}
-        🌍 الموقع: ${location}
-        🧑‍🤝‍🧑 الجنس: ${gender}
-        💬 ملاحظات: ${notes}
-        🛠️ الخدمات المختارة: 
-        ${services.join("\n")}
-        `;
-        
-        let url = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${encodeURIComponent(message)}`;
-        window.open(url, "_blank");
-        await sendEmail(message);
-    }
-    async function sendEmail(message) {
-        let emailData = {
-            to: 'your-email@example.com',
-            subject: 'طلب حجز خدمة تنظيف',
-            body: message
-        };
-        await fetch('https://your-email-api-endpoint.com/send', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(emailData)
-        });
+        let message = `👤 الاسم: ${name}\n👫 النوع: ${gender}\n📞 الهاتف: ${phone}\n📍 الموقع: ${location}\n📍 العنوان: ${address}\n🗓 التاريخ: ${date}\n📝 ملاحظات: ${notes}\n💰 السعر الإجمالي: ${totalPrice} جنيه\n🚰 الخدمات:\n${services.join("\n")}\n📸 إثبات الدفع: ${proofUrl}`;
+        let waUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+        window.open(waUrl, "_blank");
+        let mailtoLink = `mailto:Twiningtrade@gmail.com?subject=طلب حجز خدمة تنظيف من ${name}&body=${encodeURIComponent(message)}`;
+        window.open(mailtoLink, "_blank");
+        document.getElementById("successMessage").style.display = "block";
     }
 </script>
 </body>
