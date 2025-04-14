@@ -6,9 +6,29 @@
     <meta name="description" content="احصل على خدمات تنظيف شاملة ومميزة للمنازل والمكاتب من توينينج. أسعار تنافسية، حجز سهل، جودة عالية، وخدمة عملاء ممتازة. احجز الآن عبر واتساب.">
     <meta name="keywords" content="تنظيف منازل, تنظيف مكاتب, شركة نظافة, حجز تنظيف, تنظيف شامل, توينينج للنظافة">
     <meta name="robots" content="index, follow">
+
+    <!-- Open Graph & Twitter for SEO -->
+    <meta property="og:title" content="احجز خدمة تنظيف احترافية في دقائق | توينينج للنظافة">
+    <meta property="og:description" content="خدمات تنظيف شاملة وسهلة الحجز. احجز الآن!">
+    <meta property="og:image" content="https://i.postimg.cc/bvjDNQ0j/Whats-App-Image-2025-04-07-at-21-17-23-e65cadc5-removebg-preview.png">
+    <meta property="og:url" content="https://your-website-link.com">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal&display=swap" rel="stylesheet">
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX');
+    </script>
+
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Tajawal', sans-serif;
             text-align: center;
             direction: rtl;
             background: #e0f7fa;
@@ -50,11 +70,6 @@
             border: 1px dashed #e0c200;
             margin-top: 10px;
             border-radius: 5px;
-        }
-        .success-message {
-            color: green;
-            font-weight: bold;
-            margin-top: 15px;
         }
         @media (max-width: 480px) {
             .container {
@@ -100,8 +115,7 @@
                 <option value="700">تنظيف مرتبة سنجل ١٤٠ سم - 700 جنيه</option>
                 <option value="150">تنظيف شباك غرفة الوميتال - 150 جنيه</option>
                 <option value="300">تنظيف باب بلكونة الوميتال - 300 جنيه</option>
-                <option value="750">التنظيف اليومى المنتظم (10ص - 6م) بدون أدوات - 750 جنيه</option>
-            </select>
+                <option value="750">التنظيف اليومى المنتظم (10ص - 6م) بدون أدوات - 750 جنيه</option>            </select>
             <input type="number" class="area" placeholder="العدد أو المساحة" oninput="calculatePrice()">
             <button onclick="removeService(this)">❌ حذف</button>
         </div>
@@ -111,23 +125,28 @@
     <input type="text" id="name" placeholder="الاسم" required>
     <input type="tel" id="phone" placeholder="رقم الهاتف" required>
     <input type="text" id="address" placeholder="العنوان بالتفصيل" required>
-    <input type="date" id="date" required >
+    <input type="date" id="date" required>
     <select id="gender" required>
         <option value="ذكر">ذكر</option>
         <option value="أنثى">أنثى</option>
     </select>
     <textarea id="notes" placeholder="ملاحظات إضافية"></textarea>
     <div class="note">
-        💵 يجب دفع نصف إجمالى قيمة الطلب مقدمًا (أي <span id="halfPrice">0</span> جنيه) <br>
+        💵 يجب دفع نصف قيمة الطلب مقدمًا (أي <span id="halfPrice">0</span> جنيه)<br>
         يرجى التحويل على رقم محفظة <strong>01116199928</strong> ورفع صورة إثبات الدفع.
     </div>
     <input type="file" id="paymentProof" accept="image/*" required>
     <button onclick="getLocation()">📍 مشاركة الموقع</button>
     <input type="text" id="location" placeholder="موقعك" readonly>
-    <button onclick="sendWhatsApp()">📲 تأكيد الحجز عبر واتساب</button>
-    <p id="successMessage" class="success-message" style="display:none;">تم تأكيد الحجز و شكرا لإختيارك شركة توينينج لخدمات النظافة 🌟</p>
+    <button id="confirmBtn" onclick="sendWhatsApp()">📲 تأكيد الحجز عبر واتساب</button>
 </div>
+
 <script>
+    // تنبيه عند فتح الصفحة من فيسبوك
+    if (navigator.userAgent.includes("FBAN") || navigator.userAgent.includes("FBAV")) {
+        alert("يرجى فتح الموقع من خلال المتصفح الخارجي (Chrome أو Safari) للحصول على تجربة أفضل.");
+    }
+
     function calculatePrice() {
         let totalPrice = 0;
         document.querySelectorAll('.serviceItem').forEach(item => {
@@ -138,6 +157,7 @@
         document.getElementById("totalPrice").innerText = totalPrice;
         document.getElementById("halfPrice").innerText = Math.ceil(totalPrice / 2);
     }
+
     function addService() {
         let serviceOptions = document.querySelector(".service").innerHTML;
         let container = document.getElementById("servicesContainer");
@@ -145,16 +165,18 @@
         newService.classList.add("serviceItem");
         newService.innerHTML = `
             <label>اختر الخدمة</label>
-            <select class="service" onchange="calculatePrice()">` + serviceOptions + `</select>
+            <select class="service" onchange="calculatePrice()">${serviceOptions}</select>
             <input type="number" class="area" placeholder="العدد أو المساحة" oninput="calculatePrice()">
             <button onclick="removeService(this)">❌ حذف</button>
         `;
         container.appendChild(newService);
     }
+
     function removeService(button) {
         button.parentElement.remove();
         calculatePrice();
     }
+
     function getLocation() {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function(position) {
@@ -169,8 +191,12 @@
             alert("المتصفح لا يدعم تحديد الموقع الجغرافي.");
         }
     }
+
     async function sendWhatsApp() {
-        let phoneNumber = "201021584901";
+        let confirmButton = document.getElementById("confirmBtn");
+        confirmButton.disabled = true;
+        confirmButton.innerText = "جاري الإرسال...";
+
         let name = document.getElementById("name").value.trim();
         let phone = document.getElementById("phone").value.trim();
         let address = document.getElementById("address").value.trim();
@@ -180,10 +206,21 @@
         let location = document.getElementById("location").value.trim() || "لم يتم مشاركة الموقع";
         let totalPrice = document.getElementById("totalPrice").innerText;
         let paymentProof = document.getElementById("paymentProof").files[0];
-        if (!paymentProof) {
-            alert("يرجى رفع صورة إثبات الدفع.");
+
+        if (!name || !phone || !address || !date) {
+            alert("يرجى ملء جميع البيانات المطلوبة.");
+            confirmButton.disabled = false;
+            confirmButton.innerText = "📲 تأكيد الحجز عبر واتساب";
             return;
         }
+
+        if (!paymentProof) {
+            alert("يرجى رفع صورة إثبات الدفع.");
+            confirmButton.disabled = false;
+            confirmButton.innerText = "📲 تأكيد الحجز عبر واتساب";
+            return;
+        }
+
         const formData = new FormData();
         formData.append("image", paymentProof);
         const response = await fetch("https://api.imgbb.com/1/upload?key=bde613bd4475de5e00274a795091ba04", {
@@ -192,18 +229,21 @@
         });
         const result = await response.json();
         const proofUrl = result.data.url;
+
         let services = [];
         document.querySelectorAll(".serviceItem").forEach(item => {
             let serviceText = item.querySelector(".service").selectedOptions[0].text;
             let quantity = item.querySelector(".area").value || 1;
             services.push(`${serviceText} - ${quantity}`);
         });
-        let message = `👤 الاسم: ${name}\n👫 النوع: ${gender}\n📞 الهاتف: ${phone}\n📍 الموقع: ${location}\n📍 العنوان: ${address}\n🗓 التاريخ: ${date}\n📝 ملاحظات: ${notes}\n💰 السعر الإجمالي: ${totalPrice} جنيه\n🚰 الخدمات:\n${services.join("\n")}\n📸 إثبات الدفع: ${proofUrl}`;
-        let waUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+
+        let message = `👤 الاسم: ${name}\n👫 النوع: ${gender}\n📞 الهاتف: ${phone}\n📍 الموقع: ${location}\n📍 العنوان: ${address}\n🗓 التاريخ: ${date}\n📝 ملاحظات: ${notes}\n💰 السعر الإجمالي: ${totalPrice} جنيه\n🚰 الخدمات:\n${services.join("\n")}\n📸 إثبات الدفع: ${proofUrl} (اضغط لعرض الصورة)`;
+
+        let waUrl = `https://wa.me/201021584901?text=${encodeURIComponent(message)}`;
         window.open(waUrl, "_blank");
+
         let mailtoLink = `mailto:Twiningtrade@gmail.com?subject=طلب حجز خدمة تنظيف من ${name}&body=${encodeURIComponent(message)}`;
         window.open(mailtoLink, "_blank");
-        document.getElementById("successMessage").style.display = "block";
     }
 </script>
 </body>
