@@ -2,11 +2,18 @@
 <html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>احجز خدمة تنظيف احترافية في دقائق | توينينج للنظافة</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="description" content="احصل على خدمات تنظيف شاملة ومميزة للمنازل والمكاتب من توينينج. أسعار تنافسية، حجز سهل، جودة عالية، وخدمة عملاء ممتازة. احجز الآن عبر واتساب.">
     <meta name="keywords" content="تنظيف منازل, تنظيف مكاتب, شركة نظافة, حجز تنظيف, تنظيف شامل, توينينج للنظافة">
     <meta name="robots" content="index, follow">
+    <meta property="og:title" content="احجز خدمة تنظيف احترافية في دقائق | توينينج للنظافة">
+    <meta property="og:description" content="خدمات تنظيف للمنازل والمكاتب بجودة عالية وسهولة في الحجز.">
+    <meta property="og:image" content="https://i.postimg.cc/bvjDNQ0j/Whats-App-Image-2025-04-07-at-21-17-23-e65cadc5-removebg-preview.png">
+    <meta property="og:url" content="https://yourdomain.com/booking">
+    <meta property="og:type" content="website">
+    <meta name="format-detection" content="telephone=no">
+    <title>احجز خدمة تنظيف احترافية في دقائق | توينينج للنظافة</title>
     <style>
         body {
             font-family: Arial, sans-serif;
