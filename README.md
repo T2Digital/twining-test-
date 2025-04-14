@@ -97,7 +97,8 @@
                 <option value="700">تنظيف مرتبة سنجل ١٤٠ سم - 700 جنيه</option>
                 <option value="150">تنظيف شباك غرفة الوميتال - 150 جنيه</option>
                 <option value="300">تنظيف باب بلكونة الوميتال - 300 جنيه</option>
-                <option value="750">التنظيف اليومى المنتظم (10ص - 6م) بدون أدوات - 750 جنيه</option>            </select>
+                <option value="750">التنظيف اليومى المنتظم (10ص - 6م) بدون أدوات - 750 جنيه</option>
+            </select>
             <input type="number" class="area" placeholder="العدد أو المساحة" oninput="calculatePrice()">
             <button onclick="removeService(this)">❌ حذف</button>
         </div>
@@ -116,13 +117,13 @@
     </select>
     <textarea id="notes" placeholder="ملاحظات إضافية"></textarea>
     <div class="note">
-        💵 يجب دفع نصف قيمة إجمالى مبلغ الطلب مقدمًا (أي <span id="halfPrice">0</span> جنيه) <br>
+        💵 يجب دفع نصف قيمة الطلب مقدمًا (أي <span id="halfPrice">0</span> جنيه) <br>
         يرجى التحويل على رقم محفظة <strong>01116199928</strong> ورفع صورة إثبات الدفع.
     </div>
     <input type="file" id="paymentProof" accept="image/*" required>
     <button onclick="getLocation()">📍 مشاركة الموقع</button>
     <input type="text" id="location" placeholder="موقعك" readonly>
-    <button onclick="sendWhatsApp(); sendEmail();">📲 تأكيد الحجز</button>
+    <button onclick="validateAndSubmit()">📲 تأكيد الحجز</button>
     <button onclick="openInBrowser()">🌐 فتح في المتصفح</button>
     <p id="successMessage" class="success-message" style="display:none;">تم تأكيد الحجز و شكرا لإختيارك شركة توينينج لخدمات النظافة 🌟</p>
 </div>
@@ -159,6 +160,8 @@ function getLocation() {
             const lat = position.coords.latitude;
             const lon = position.coords.longitude;
             document.getElementById('location').value = `https://maps.google.com/?q=${lat},${lon}`;
+        }, function() {
+            alert("فشل في الحصول على الموقع. الرجاء المحاولة لاحقًا.");
         });
     } else {
         alert("المتصفح لا يدعم مشاركة الموقع.");
@@ -171,6 +174,17 @@ function openInBrowser() {
     } else {
         alert("أنت بالفعل خارج تطبيق فيسبوك");
     }
+}
+
+function validateAndSubmit() {
+    const proof = document.getElementById('paymentProof').files.length;
+    if (!proof) {
+        alert("يجب رفع صورة إثبات الدفع لتأكيد الحجز.");
+        return;
+    }
+    sendWhatsApp();
+    sendEmail();
+    document.getElementById('successMessage').style.display = 'block';
 }
 
 function sendWhatsApp() {
@@ -197,8 +211,6 @@ function sendWhatsApp() {
     const message = `🔹 اسم العميل: ${name}\n📞 رقم الهاتف: ${phone}\n📍 العنوان: ${address}\n📅 التاريخ: ${date}\n👤 النوع: ${gender}\n\n🧹 الخدمات:${serviceText}\n💰 الإجمالي: ${total} جنيه\n💵 نصف القيمة: ${half} جنيه\n📍 موقعك: ${location}\n📝 ملاحظات: ${notes}`;
     const url = `https://wa.me/201116199928?text=${encodeURIComponent(message)}`;
     window.open(url, '_blank');
-
-    document.getElementById('successMessage').style.display = 'block';
 }
 
 function sendEmail() {
