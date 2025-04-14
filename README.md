@@ -131,7 +131,7 @@
     <input type="text" id="name" placeholder="الاسم" required>
     <input type="tel" id="phone" placeholder="رقم الهاتف" required>
     <input type="text" id="address" placeholder="العنوان بالتفصيل" required>
-        <label for="date">حدد تاريخ الحجز👇:</label>
+        <label for="date">حدد تاريخ الحجز : 👇 </label>
     <input type="date" id="date" placeholder="حدد تاريخ الحجز" required>
     <select id="gender" required>
         <option value="ذكر">ذكر</option>
