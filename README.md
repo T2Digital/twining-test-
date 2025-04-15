@@ -129,7 +129,7 @@
     </select>
     <textarea id="notes" placeholder="ملاحظات إضافية"></textarea>
     <div class="note">
-      💵 يجب دفع نصف قيمة الطلب مقدمًا (أي <span id="halfPrice">0</span> جنيه)<br>
+      💵 يجب دفع نصف إجمالى قيمة الطلب مقدمًا (أي <span id="halfPrice">0</span> جنيه)<br>
       يرجى التحويل على رقم محفظة <strong>01116199928</strong> ورفع صورة إثبات الدفع.
     </div>
     <input type="file" id="paymentProof" accept="image/*" required>
