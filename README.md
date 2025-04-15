@@ -221,7 +221,7 @@
         console.error("فشل في إرسال الإيميل", err);
       });
 
-      fetch("https://script.google.com/macros/s/AKfycbyQcBq1_Cl0oqQJezWG1ynTm0v0cS3Jv0bRMZSzwLT-/dev", {
+      fetch("https://script.google.com/macros/s/AKfycbzNvEpweXKg2BxrIfzqHSgRNnIZsYvJWXNWm5vzsAI/dev", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
