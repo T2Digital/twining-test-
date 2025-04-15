@@ -112,7 +112,7 @@
           <option value="300">تنظيف باب بلكونة الوميتال - 300 جنيه</option>
           <option value="750">التنظيف اليومى المنتظم (10ص - 6م) بدون أدوات - 750 جنيه</option>
         </select>
-        <input type="number" class="area" placeholder="العدد أو المساحة" oninput="calculatePrice()">
+        <input type="text" class="area" placeholder="العدد أو المساحة" oninput="calculatePrice()">
         <button onclick="removeService(this)">❌ حذف</button>
       </div>
     </div>
@@ -161,7 +161,7 @@
       div.innerHTML = `
         <label>اختر الخدمة</label>
         <select class="service" onchange="calculatePrice()">${options}</select>
-        <input type="number" class="area" placeholder="العدد أو المساحة" oninput="calculatePrice()">
+        <input type="text" class="area" placeholder="العدد أو المساحة" oninput="calculatePrice()">
         <button onclick="removeService(this)">❌ حذف</button>
       `;
       document.getElementById('servicesContainer').appendChild(div);
@@ -267,6 +267,25 @@ window.onload = function () {
     }
 };
 </script>
+
+<script>
+function convertArabicToEnglishNumbers(str) {
+    return str.replace(/[٠-٩]/g, d => '0123456789'['٠١٢٣٤٥٦٧٨٩'.indexOf(d)]);
+}
+
+function calculatePrice() {
+    let total = 0;
+    document.querySelectorAll('.serviceItem').forEach(item => {
+        let price = parseFloat(item.querySelector('.service').value);
+        let inputVal = item.querySelector('.area').value;
+        let quantity = parseFloat(convertArabicToEnglishNumbers(inputVal)) || 0;
+        total += price * quantity;
+    });
+    document.getElementById('totalPrice').innerText = total;
+    document.getElementById('halfPrice').innerText = Math.ceil(total / 2);
+}
+</script>
 </body>
+
 
 </html>
