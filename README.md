@@ -238,5 +238,35 @@
       document.getElementById("successMessage").style.display = "block";
     }
   </script>
+
+<script>
+function convertArabicToEnglishNumbers(str) {
+    return str.replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d));
+}
+
+function calculatePrice() {
+    let total = 0;
+    document.querySelectorAll('.serviceItem').forEach(item => {
+        let price = parseFloat(item.querySelector('.service').value);
+        let qtyInput = item.querySelector('.area').value;
+        let qtyEnglish = convertArabicToEnglishNumbers(qtyInput);
+        let qty = parseFloat(qtyEnglish);
+        if (!qtyInput || qty <= 0 || isNaN(qty)) qty = 0;
+        total += price * qty;
+    });
+    document.getElementById("totalPrice").innerText = total;
+    document.getElementById("halfPrice").innerText = Math.ceil(total / 2);
+}
+</script>
+
+<script>
+window.onload = function () {
+    const ua = navigator.userAgent.toLowerCase();
+    if (ua.includes('fbav') || ua.includes('instagram')) {
+        alert("⚠️ يرجى فتح الصفحة في المتصفح الخارجي (مثل Chrome أو Safari) لضمان عمل الحجز بشكل سليم.");
+    }
+};
+</script>
 </body>
+
 </html>
