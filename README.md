@@ -116,7 +116,8 @@
     <input type="text" id="name" placeholder="الاسم" required>
     <input type="tel" id="phone" placeholder="رقم الهاتف" required>
     <input type="text" id="address" placeholder="العنوان بالتفصيل" required>
-    <input type="date" id="date" placeholder="حدد تاريخ الحجز" require>
+    <label for="date">حدد تاريخ الحجز</label>
+    <input type="date" id="date" required>
     <select id="gender" required>
       <option value="ذكر">ذكر</option>
       <option value="أنثى">أنثى</option>
@@ -138,7 +139,13 @@
       let total = 0;
       document.querySelectorAll('.serviceItem').forEach(item => {
         let price = parseFloat(item.querySelector('.service').value);
-        let qty = parseFloat(item.querySelector('.area').value) || 1;
+        let qtyInput = item.querySelector('.area').value;
+        let qty = parseFloat(qtyInput);
+
+        if (!qtyInput || qty <= 0 || isNaN(qty)) {
+          qty = 0; // لا يتم حساب السعر إذا كانت القيمة فارغة أو صفر أو غير رقمية
+        }
+
         total += price * qty;
       });
       document.getElementById("totalPrice").innerText = total;
@@ -198,11 +205,10 @@
 
       const services = [...document.querySelectorAll(".serviceItem")].map(item => {
         const serviceText = item.querySelector(".service").selectedOptions[0].text;
-        const quantity = item.querySelector(".area").value || 1;
+        const quantity = item.querySelector(".area").value || 0;
         return `${serviceText} - ${quantity}`;
       });
 
-      // إرسال الإيميل تلقائيًا باستخدام EmailJS
       emailjs.send("service_19gxbce", "template_xvxtz3v", {
         name, phone, gender, address, date, location, notes,
         totalPrice, services: services.join("\n"), proofUrl
@@ -212,7 +218,6 @@
         console.error("فشل في إرسال الإيميل", err);
       });
 
-      // إرسال واتساب
       const message = `👤 الاسم: ${name}\n👫 النوع: ${gender}\n📞 الهاتف: ${phone}\n📍 الموقع: ${location}\n📍 العنوان: ${address}\n🗓 التاريخ: ${date}\n📝 ملاحظات: ${notes}\n💰 السعر الإجمالي: ${totalPrice} جنيه\n🚰 الخدمات:\n${services.join("\n")}\n📸 إثبات الدفع: ${proofUrl}`;
       const waUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
       window.open(waUrl, "_blank");
